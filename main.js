@@ -10,7 +10,7 @@ import { $http } from '@escook/request-miniprogram'
 uni.$http = $http
 
 // 基准地址
-$http.baseUrl = 'https://www.uinav.com'
+$http.baseUrl = 'https://api-ugo-web.itheima.net'
 
 // 封装弹框的方法 自定义 $showMssg
 uni.$showMssg = function(title = '数据请求失败！', duration = 1500) {
