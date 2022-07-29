@@ -1,26 +1,29 @@
 <template>
-	<view class="rolling">
-		<scroll-view scroll-y="true" :style="{height: wh + 'px'}" class="rolling-left">
-			<view @click="qh(i)" :class="['rolling-left-item', i === act?'act':'']" v-for="(item, i) in arr" :key="i">
-				{{ item.cat_name }}
-			</view>
-		</scroll-view>
-		<scroll-view scroll-y="true" :style="{height: wh + 'px'}" :scroll-top="scrollTop" class="rolling-right">
-			<view class="rolling-right-item" v-for="(item, i) in arr1" :key="i">
-				<text style="font-weight:bold">/&nbsp;{{ item.cat_name }}&nbsp;/	</text>
-				<view class="right-item">
-					<view class="rolling-right-item_1" v-for="(item1, i) in item.children" :key="i">
-						<navigator :url="'../../subpkg/goods_list/goods_list?cat_id=' + item1.cat_id" class="rolling-right-item_bottom">
-							<image class="rolling-right-item_bottom-img" :src="item1.cat_icon" mode="widthFix"></image>
-						</navigator>	
-						<view class="rolling-right-item_top">
-							{{ item1.cat_name }}
-						</view>	
+	<view class="rollinging">
+		<my-search></my-search>
+		<view class="rolling">
+			<scroll-view scroll-y="true" :style="{height: wh + 'px'}" class="rolling-left">
+				<view @click="qh(i)" :class="['rolling-left-item', i === act?'act':'']" v-for="(item, i) in arr" :key="i">
+					{{ item.cat_name }}
+				</view>
+			</scroll-view>
+			<scroll-view scroll-y="true" :style="{height: wh + 'px'}" :scroll-top="scrollTop" class="rolling-right">
+				<view class="rolling-right-item" v-for="(item, i) in arr1" :key="i">
+					<text style="font-weight:bold">/&nbsp;{{ item.cat_name }}&nbsp;/	</text>
+					<view class="right-item">
+						<view class="rolling-right-item_1" v-for="(item1, i) in item.children" :key="i">
+							<navigator :url="'../../subpkg/goods_list/goods_list?cat_id=' + item1.cat_id" class="rolling-right-item_bottom">
+								<image class="rolling-right-item_bottom-img" :src="item1.cat_icon" mode="widthFix"></image>
+							</navigator>	
+							<view class="rolling-right-item_top">
+								{{ item1.cat_name }}
+							</view>	
+						</view>
 					</view>
 				</view>
-			</view>
-			
-		</scroll-view>
+				
+			</scroll-view>
+		</view>
 	</view>
 </template>
 
@@ -59,60 +62,62 @@
 		},
 		onLoad() {
 			const sty = uni.getSystemInfoSync()
-			this.wh = sty.windowHeight
+			this.wh = sty.windowHeight - 50
 			this.getRoll()
 		}
 	}
 </script>
 
 <style lang="scss">
-.rolling{
-	display: flex;
-	.rolling-left{
-		width: 140px;
-		.rolling-left-item{
-			text-align: center;
-			line-height: 60px;
-			font-size: 24rpx;
-			&.act{
-				background: white;
-				position: relative;
-				&::before{
-					content: ' ';
-					width: 3px;
-					display: block;
-					height: 30px;
-					position: absolute;
-					top: 50%;
-					left: 0;
-					transform: translateY(-50%);
-					background-color: red;
-				}
-			}
-		}
-		
-	}
-	.rolling-right{
-		.rolling-right-item{
-			text-align: center;
-			line-height: 60px;
-			.right-item{
-				display: flex;
-				flex-wrap: wrap;
-				justify-content: center;
-				.rolling-right-item_1{
-					margin: 10px;
-					.rolling-right-item_bottom-img{
-						width: 150rpx;
-						
-					}
-					.rolling-right-item_top{
-						margin-top: -30px;
-						font-size: 24rpx;
+.rollinging{
+	.rolling{
+		display: flex;
+		.rolling-left{
+			width: 140px;
+			.rolling-left-item{
+				text-align: center;
+				line-height: 60px;
+				font-size: 24rpx;
+				&.act{
+					background: white;
+					position: relative;
+					&::before{
+						content: ' ';
+						width: 3px;
+						display: block;
+						height: 30px;
+						position: absolute;
+						top: 50%;
+						left: 0;
+						transform: translateY(-50%);
+						background-color: red;
 					}
 				}
 			}
 			
+		}
+		.rolling-right{
+			.rolling-right-item{
+				text-align: center;
+				line-height: 60px;
+				.right-item{
+					display: flex;
+					flex-wrap: wrap;
+					justify-content: center;
+					.rolling-right-item_1{
+						margin: 10px;
+						.rolling-right-item_bottom-img{
+							width: 150rpx;
+							
+						}
+						.rolling-right-item_top{
+							margin-top: -30px;
+							font-size: 24rpx;
+						}
+					}
+				}
+				
+			}
 		}
 	}
 }

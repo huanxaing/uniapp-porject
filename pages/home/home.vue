@@ -1,5 +1,8 @@
 <template>
 	<view>
+		<view class="sear">
+			<my-search></my-search>
+		</view>
 		<!-- 轮播图层 -->
 		<swiper indicator-color="#dedede" indicator-active-color="black" :indicator-dots="true" :autoplay="true"
 			:interval="3000" :duration="1000" :circular="true">
@@ -83,6 +86,13 @@
 </script>
 
 <style lang="scss">
+	.sear{
+		// 设置定位效果为 “吸顶”
+		position: sticky;
+		// 吸顶的位置
+		top: 0;
+		z-index: 999;
+	}
 	swiper {
 		height: 330rpx;
 
