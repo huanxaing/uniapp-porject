@@ -16,7 +16,7 @@
 		<uni-list :border="false" v-else>
 			<uni-list-item  style="border: 0;" showArrow  v-for="(item, i) in searchList" :key="i">
 				<template v-slot:body>
-					<view class="sear-item" @click="tz(item)">
+					<view class="sear-item" @click="tz1(item)">
 						{{ item.goods_name }}
 					</view>
 				</template>
@@ -33,27 +33,12 @@
 				time: '',
 				searchList: [],
 				num: 20,
-				total: 0,
-				flg: false,
 				flge: true,
 				his: ['a', 123, 'ad']
 			};
 		},
 		onLoad() {
 			this.his = JSON.parse(uni.getStorageSync('sl') || '[]')
-		},
-		onReachBottom() {			
-			if(!this.flg) {
-				if(this.num < this.total) {
-					this.num += 10	
-					// this.searchList = []
-					this.getSearch()
-				}else {
-					uni.$showMssg("没有更多了")
-				}
-				
-				
-			}
 		},
 		methods: {
 			// 输入事件处理函数
@@ -72,26 +57,15 @@
 				})
 			},
 			async getSearch() {
-				this.flg = true
 				if(this.sj.length === 0) {
 					this.searchList = []
 					this.flge = true
 					return
 				}
-				uni.showLoading({
-					title: '数据加载中'
-				})
-				const { data: res } = await uni.$http.get('/api/public/v1/goods/search', { 
-					query: this.sj,
-					pagesize: this.num
-					})
+				const { data: res } = await uni.$http.get('/api/public/v1/goods/qsearch', { query: this.sj })
 				if (res.meta.status !== 200) return uni.$showMssg()
-				uni.hideLoading()
 				this.losat()
-				
-				this.flg = false
-				this.total = res.message.total
-				this.searchList = res.message.goods
+				this.searchList = res.message
 				// this.searchList = this.searchList.concat(res.message.goods)
 				// console.log(this.searchList)
 				
@@ -107,6 +81,11 @@
 			qc() {
 				this.his = []
 				uni.setStorageSync('sl', '[]')
+			},
+			tz1(val) {
+				uni.navigateTo({
+					url: '../goods_list/goods_list?goods_id=' + val.goods_id
+				})
 			},
 			tz(val) {
 				uni.navigateTo({
