@@ -35,7 +35,7 @@
 				this.flg = true
 				
 				const { data: res } = await uni.$http.get('/api/public/v1/goods/search', this.quey)
-				
+				if (res.meta.status !== 200) return uni.$showMssg()
 				this.arr = [...this.arr, ...res.message.goods]
 				this.total = res.message.total
 				this.zy = Math.ceil(this.total / this.quey.pagesize)
