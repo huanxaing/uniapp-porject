@@ -37,42 +37,63 @@
 </template>
 
 <script>
+	import { mapState, mapMutations, mapGetters  } from 'vuex'
+	
 	export default {
+		watch: {
+			// 定义 total 侦听器，指向一个配置对象
+		    total: {
+		        // handler 属性用来定义侦听器的 function 处理函数
+		        handler(newVal) {
+		           const findResult = this.options.find(x => x.text === '购物车')
+		           if (findResult) {
+		              findResult.info = newVal
+		           }
+		        },
+		        // immediate 属性用来声明此侦听器，是否在页面初次加载完毕后立即调用
+		        immediate: true,
+				}
+		},
+		computed: {
+			...mapGetters('m_cart', ['total']),
+			...mapState('m_cart', [])
+		},
 		data() {
 			return {
 				goods_id: 0,
 				goods_sj: {},
-				 options: [
-						{
-							icon: 'shop',
-							text: '店铺',
-							infoBackgroundColor:'#007aff',
-							infoColor:"red"
-						}, {
-							icon: 'cart',
-							text: '购物车',
-							info: 2
-						}],
-					    buttonGroup: [{
-					      text: '加入购物车',
-					      backgroundColor: '#ff0000',
-					      color: '#fff'
-					    },
-					    {
-					      text: '立即购买',
-					      backgroundColor: '#ffa200',
-					      color: '#fff'
-					    }
-					    ]
+				options: [
+					{
+						icon: 'shop',
+						text: '店铺',
+						infoBackgroundColor:'#007aff',
+						infoColor:"red"
+					}, {
+						icon: 'cart',
+						text: '购物车',
+						info: 0
+					}],
+					  buttonGroup: [{
+					  text: '加入购物车',
+					  backgroundColor: '#ff0000',
+					  color: '#fff'
+					},
+					{
+					  text: '立即购买',
+					  backgroundColor: '#ffa200',
+					  color: '#fff'
+					}
+					]
 			};
 		},
 		onLoad(e) {
 			e.goods_id === e.goods_id?e.goods_id : e.godds_id
-			console.log(e)
 			this.goods_id = e.goods_id || e.godds_id
 			this.getGoodsDetail()
+			console.log(JSON.parse(uni.getStorageSync('cart') || '[]'))
 		},
 		methods: {
+			...mapMutations('m_cart', ['addToCart']),
 			async getGoodsDetail() {
 				const { data: res } = await uni.$http.get('/api/public/v1/goods/detail', {goods_id: this.goods_id})
 				if (res.meta.status !== 200) return uni.$showMssg()
@@ -91,6 +112,26 @@
 						url: '../../pages/cart/cart'
 					})
 				}
+			},
+			// 右侧按钮的点击事件处理函数
+			buttonClick(e) {
+			   // 1. 判断是否点击了 加入购物车 按钮
+			   if (e.content.text === '加入购物车') {
+			
+			      // 2. 组织一个商品的信息对象
+			      const goods = {
+			         goods_id: this.goods_sj.goods_id,       // 商品的Id
+			         goods_name: this.goods_sj.goods_name,   // 商品的名称
+			         goods_price: this.goods_sj.goods_price, // 商品的价格
+			         goods_count: 1,                           // 商品的数量
+			         goods_small_logo: this.goods_sj.goods_small_logo, // 商品的图片
+			         goods_state: true                         // 商品的勾选状态
+			      }
+			
+			      // 3. 通过 this 调用映射过来的 addToCart 方法，把商品信息对象存储到购物车中
+			      this.addToCart(goods)
+			
+			   }
 			}
 		}
 	}
